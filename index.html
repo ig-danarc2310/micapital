@@ -2,558 +2,573 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SolesTrack - Dashboard Financiero Avanzado</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MiCapital - Dashboard Premium</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* --- Reset y Estilos Base --- */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            -webkit-tap-highlight-color: transparent;
-        }
-
+        /* ========================================= */
+        /* --- 1. Variables de Tema (OLED y Claro) - */
+        /* ========================================= */
         :root {
-            /* Colores Tema Claro */
-            --bg-color: #F4F7FC;
-            --card-bg: #FFFFFF;
-            --text-main: #333333;
-            --text-secondary: #777777;
-            --accent-green: #4CAF50;
-            --accent-red: #F44336;
-            --accent-blue: #2196F3;
-            --accent-purple: #9C27B0;
-            --shadow-light: 0 4px 15px rgba(0, 0, 0, 0.05);
-            --border-radius: 12px;
-            --spacing-xs: 8px;
-            --spacing-sm: 12px;
-            --spacing-md: 20px;
-            --spacing-lg: 30px;
-            --transition-speed: 0.3s;
-        }
-
-        body.dark-mode {
-            /* Colores Tema Oscuro */
-            --bg-color: #121212;
-            --card-bg: #1E1E1E;
-            --text-main: #E0E0E0;
-            --text-secondary: #AAAAAA;
-            --shadow-light: 0 4px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            padding-bottom: 70px; /* Espacio para el menú inferior */
-            transition: background-color var(--transition-speed);
-        }
-
-        /* --- Header y URL --- */
-        .header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            background: var(--card-bg);
-            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-            padding: var(--spacing-sm) var(--spacing-md);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-        }
-
-        .url-bar {
-            background: #E8EBF3;
-            padding: 8px 15px;
-            border-radius: 50px;
-            font-size: 14px;
-            color: var(--text-main);
-            display: flex;
-            align-items: center;
-            width: 100%;
-            max-width: 400px;
-        }
-        
-        body.dark-mode .url-bar {
-            background: #2C2C2C;
-        }
-
-        .url-bar .lock-icon {
-            margin-right: 8px;
-            color: var(--text-secondary);
-        }
-
-        .theme-toggle-container {
-            position: absolute;
-            right: var(--spacing-md);
-        }
-
-        .theme-toggle {
-            background: none;
-            border: none;
-            font-size: 20px;
-            cursor: pointer;
-            color: var(--text-main);
-        }
-
-        /* --- Contenedor Principal --- */
-        .main-content {
-            margin-top: 60px; /* Altura del header */
-            padding: var(--spacing-md);
-            max-width: 1200px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        /* --- Grid de Tarjetas de Indicadores (Móvil-First) --- */
-        .kpi-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr; /* Dos columnas por defecto */
-            gap: var(--spacing-sm);
-            margin-bottom: var(--spacing-md);
-        }
-
-        .kpi-card {
-            background: var(--card-bg);
-            border-radius: var(--border-radius);
-            padding: var(--spacing-sm);
-            box-shadow: var(--shadow-light);
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-        .kpi-title {
-            font-size: 11px;
-            text-transform: uppercase;
-            color: var(--text-secondary);
-            font-weight: 600;
-            margin-bottom: 4px;
-        }
-
-        .kpi-value {
-            font-size: 20px;
-            font-weight: 700;
-            white-space: nowrap;
-        }
-
-        .kpi-card.negative .kpi-value { color: var(--accent-red); }
-        .kpi-card.positive .kpi-value { color: var(--accent-green); }
-        .kpi-card.favor .kpi-value { color: var(--accent-blue); }
-
-        /* --- Secciones de Panel --- */
-        .panel-section {
-            background: var(--card-bg);
-            border-radius: var(--border-radius);
-            padding: var(--spacing-md);
-            box-shadow: var(--shadow-light);
-            margin-bottom: var(--spacing-md);
-        }
-
-        .section-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: var(--spacing-md);
-            border-bottom: 1px solid rgba(0,0,0,0.05);
-            padding-bottom: 10px;
-        }
-
-        .section-title {
-            font-size: 18px;
-            font-weight: 600;
-            color: var(--text-main);
-        }
-
-        .sync-status {
-            background: rgba(76, 175, 80, 0.1);
-            color: var(--accent-green);
-            font-size: 12px;
-            font-weight: 500;
-            padding: 4px 10px;
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-        }
-        
-        .sync-status .dot {
-            width: 8px;
-            height: 8px;
-            background-color: var(--accent-green);
-            border-radius: 50%;
-            margin-right: 6px;
-        }
-
-        /* --- Formularios y Controles --- */
-        .form-group {
-            margin-bottom: var(--spacing-md);
-        }
-
-        .input-group {
-            display: flex;
-            gap: var(--spacing-xs);
-            margin-bottom: var(--spacing-sm);
-        }
-
-        input[type="text"] {
-            flex-grow: 1;
-            padding: 12px;
-            border-radius: 8px;
-            border: 1px solid rgba(0, 0, 0, 0.1);
-            background: var(--bg-color);
-            color: var(--text-main);
-            font-size: 14px;
-        }
-
-        input[type="text"]:focus {
-            outline: none;
-            border-color: var(--accent-purple);
-        }
-
-        button {
-            padding: 12px 20px;
-            border-radius: 8px;
-            border: none;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 14px;
-            transition: opacity 0.2s;
-        }
-
-        button:active {
-            opacity: 0.8;
-        }
-
-        .btn-primary {
-            background: var(--accent-purple);
-            color: white;
-        }
-
-        .btn-secondary {
-            background: #E8EBF3;
-            color: var(--text-main);
-        }
-
-        /* --- Lista de Tarjetas --- */
-        .card-list {
-            margin-top: var(--spacing-sm);
-        }
-
-        .card-item {
-            background: rgba(0, 0, 0, 0.02);
-            border-radius: 8px;
-            padding: 12px 15px;
-            margin-bottom: var(--spacing-xs);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-left: 4px solid #ccc; /* Color por defecto */
-        }
-
-        .card-info {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .card-item span {
-            font-size: 14px;
-            color: var(--text-main);
-        }
-
-        .delete-btn {
-            background: none;
-            border: none;
-            color: var(--text-secondary);
-            font-size: 18px;
-            padding: 0;
-        }
-
-        /* --- Menú de Navegación Inferior (Móvil) --- */
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 60px;
-            background: var(--card-bg);
-            border-top: 1px solid rgba(0, 0, 0, 0.05);
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.03);
-            z-index: 1000;
-        }
-
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-size: 10px;
-            gap: 4px;
-            flex: 1;
-            text-align: center;
-        }
-
-        .nav-item.active {
-            color: var(--accent-purple);
-        }
-
-        .nav-icon {
-            font-size: 20px;
-        }
-
-        /* --- Botón Flotante 'Añadir' --- */
-        .fab {
-            position: fixed;
-            bottom: 80px;
-            right: 20px;
-            width: 56px;
-            height: 56px;
-            border-radius: 50%;
-            background: var(--accent-purple);
-            color: white;
-            border: none;
-            font-size: 24px;
-            box-shadow: 0 4px 10px rgba(156, 39, 176, 0.3);
-            z-index: 999;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        /* ===========================================
-           --- MEDIA QUERIES (PARA COMPUTADORA) ---
-           Aplica para pantallas de más de 768px (Tablets y Desktop)
-        =========================================== */
-        @media (min-width: 768px) {
-            .header {
-                justify-content: space-between;
-                padding: 10px 40px;
-            }
-
-            .main-content {
-                margin-top: 80px; /* Header más grande en desktop */
-                padding: 40px;
-            }
-
-            /* --- Grid de KPIs en Escritorio (4 columnas) --- */
-            .kpi-grid {
-                grid-template-columns: repeat(4, 1fr);
-                gap: var(--spacing-md);
-                margin-bottom: var(--spacing-lg);
-            }
-
-            .kpi-card {
-                padding: var(--spacing-md);
-            }
-
-            .kpi-value {
-                font-size: 26px;
-            }
-
-            /* --- Navegación Vertical (Opcional, pero para mantener coherencia) --- */
-            .bottom-nav {
-                display: none; /* Ocultamos menú inferior en PC */
-            }
-
-            /* Mostramos menú lateral en su lugar (requiere ajuste HTML, pero para este MVP simplemente lo quitamos) */
+            /* MODO OSCURO AMALED NEGRO PURO */
+            --bg-body: #000000;         
+            --bg-nav: #090d16;          
+            --bg-card: rgba(15, 23, 42, 0.45); 
+            --bg-kpi: #0b0f19;
+            --border-card: rgba(255, 255, 255, 0.07);     
+            --text-main: #f8fafc;       
+            --text-muted: #64748b;      
             
-            .fab {
-                bottom: 40px;
-                right: 40px;
-            }
+            --color-primary: #38bdf8;   
+            --color-positive: #4ade80;  
+            --color-negative: #fb7185;  
+            --color-warning: #fbbf24;   
+            --color-sync: #818cf8;      
+            
+            --radius-lg: 16px;
+            --radius-md: 12px;
+            --spacing-sm: 16px;
+            --spacing-md: 24px;
+            --spacing-lg: 32px;
+            --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            --shadow-ui: 0 4px 24px rgba(0,0,0,0.2);
+        }
+
+        [data-theme="light"] {
+            /* MODO CLARO PREMIUM CORREGIDO */
+            --bg-body: #f8fafc;                 
+            --bg-nav: #ffffff;                  
+            --bg-card: #ffffff;                 
+            --bg-kpi: #ffffff;
+            --border-card: rgba(0, 0, 0, 0.06); 
+            --text-main: #0f172a;               
+            --text-muted: #64748b;              
+            --color-primary: #0284c7;   
+            --color-positive: #16a34a;  
+            --color-negative: #dc2626;
+            --shadow-ui: 0 10px 30px rgba(0, 0, 0, 0.04); 
+        }
+
+        /* --- Estilos Base --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        body { background-color: var(--bg-body); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; transition: var(--transition); padding-bottom: 90px; }
+        
+        /* --- Pantalla de Bloqueo (Login PIN) --- */
+        #auth-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #000000; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; transition: opacity 0.4s ease, visibility 0.4s; }
+        #auth-overlay.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+        .auth-card { background-color: #0b0f19; border: 1px solid rgba(255,255,255,0.08); padding: 30px; border-radius: var(--radius-lg); width: 100%; max-width: 365px; text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.6); }
+        .auth-card h2 { font-size: 24px; margin-bottom: 10px; font-weight: 700; color: #fff; letter-spacing: -0.5px; }
+        .auth-card p { font-size: 13px; color: var(--text-muted); margin-bottom: 20px; }
+        .pin-input-group { position: relative; margin-bottom: 15px; }
+        .pin-input-group input { width: 100%; background-color: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); padding: 14px; border-radius: var(--radius-md); color: #fff; font-size: 18px; text-align: center; letter-spacing: 8px; font-weight: bold; }
+        .pin-input-group input:focus { border-color: var(--color-primary); outline: none; }
+        .auth-error { color: var(--color-negative); font-size: 12px; margin-top: 8px; display: none; font-weight: 500; }
+
+        /* --- Navegación Adaptable --- */
+        .main-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: 80px; background-color: rgba(9, 13, 22, 0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-top: 1px solid var(--border-card); display: flex; justify-content: space-around; align-items: center; z-index: 1000; transition: var(--transition); }
+        [data-theme="light"] .main-nav { background-color: rgba(255, 255, 255, 0.9); border-top: 1px solid rgba(0,0,0,0.05); }
+        .nav-logo h2 { display: none; }
+        .nav-links { display: contents; list-style: none; }
+        .nav-links li button.nav-btn-link { background: none; border: none; display: flex; flex-direction: column; align-items: center; color: var(--text-muted); font-size: 11px; font-weight: 500; cursor: pointer; width: 20%; gap: 6px; transition: var(--transition); }
+        .nav-links li button.nav-btn-link:hover { color: var(--text-main); }
+        .nav-links li button.nav-btn-link.active { color: var(--color-primary); }
+        .nav-links li button.nav-btn-link i { font-size: 20px; transition: var(--transition); }
+        .btn-toggle { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 18px; transition: var(--transition); }
+        .btn-toggle:hover { color: var(--color-warning); }
+
+        /* --- Contenedor --- */
+        .dashboard-container { flex: 1; padding: var(--spacing-md) var(--spacing-sm); width: 100%; max-width: 1400px; margin: 0 auto; }
+        .dashboard-section { display: none; animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        .dashboard-section.active { display: block; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .section-header-actions { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-md); }
+        .section-header-actions h2 { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; }
+        
+        /* --- Fichas de Balance (Estilo Tarjeta KPIs) --- */
+        .kpi-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--spacing-sm); margin-bottom: var(--spacing-lg); }
+        .kpi-card { background: var(--bg-kpi); border: 1px solid var(--border-card); border-radius: var(--radius-lg); padding: 18px; display: flex; flex-direction: column; justify-content: space-between; min-height: 120px; position: relative; box-shadow: var(--shadow-ui); transition: var(--transition); }
+        .kpi-card:hover { transform: translateY(-2px); }
+        .kpi-header-row { display: flex; justify-content: space-between; align-items: center; color: var(--text-muted); }
+        .kpi-header-row h3 { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+        .amount { font-size: 22px; font-weight: 800; margin-top: 10px; letter-spacing: -0.3px; }
+        .btn-edit-kpi { background: rgba(0,0,0,0.05); border: 1px solid var(--border-card); color: var(--text-main); cursor: pointer; font-size: 11px; font-weight: 600; padding: 4px 8px; border-radius: 6px; transition: var(--transition); }
+        [data-theme="dark"] .btn-edit-kpi { background: rgba(255,255,255,0.05); }
+
+        /* --- Tarjetas de Deuda Inteligentes con Inyección de Color --- */
+        .cards-grid { display: grid; grid-template-columns: 1fr; gap: var(--spacing-md); }
+        .credit-card-item { background: var(--bg-card); border: 1px solid var(--border-card); border-radius: var(--radius-lg); padding: 20px; border-left: 5px solid var(--card-accent-color, var(--color-primary)); display: flex; flex-direction: column; gap: var(--spacing-sm); box-shadow: var(--shadow-ui); transition: var(--transition); }
+        .bank-name { font-size: 18px; font-weight: 700; letter-spacing: -0.3px; display: flex; align-items: center; gap: 8px; }
+        .card-amount { font-size: 26px; font-weight: 800; color: var(--color-negative); letter-spacing: -0.5px; }
+        
+        .credit-limit-wrapper { margin: 2px 0; }
+        .credit-limit-info { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted); margin-bottom: 6px; }
+        .progress-bar-bg { background-color: rgba(0,0,0,0.04); width: 100%; height: 6px; border-radius: 10px; overflow: hidden; }
+        [data-theme="dark"] .progress-bar-bg { background-color: rgba(255,255,255,0.05); }
+        .progress-bar-fill { background: var(--card-accent-color, var(--color-primary)); height: 100%; width: 0%; border-radius: 10px; transition: width 0.6s ease; }
+
+        .card-dates { display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-sm); font-size: 12px; color: var(--text-muted); background: rgba(0,0,0,0.02); padding: 8px 12px; border-radius: 8px; }
+        [data-theme="dark"] .card-dates { background: rgba(0,0,0,0.2); }
+        .card-buttons-group { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 5px; }
+        
+        .btn-action-card { background-color: rgba(248, 113, 113, 0.08); color: var(--color-negative); border: 1px solid rgba(248, 113, 113, 0.15); padding: 11px; border-radius: var(--radius-md); font-weight: 600; cursor: pointer; text-align: center; font-size: 13px; display: flex; align-items: center; justify-content: center; gap: 6px; transition: var(--transition); }
+        .btn-action-card:hover { opacity: 0.8; }
+        .btn-edit-item { background-color: rgba(56, 189, 248, 0.08); color: var(--color-primary); border-color: rgba(56, 189, 248, 0.15); }
+
+        /* --- Panel Config --- */
+        .config-card { background: var(--bg-card); border: 1px solid var(--border-card); border-radius: var(--radius-lg); padding: 24px; margin-bottom: var(--spacing-md); box-shadow: var(--shadow-ui); }
+        .form-group { margin-bottom: var(--spacing-sm); display: flex; flex-direction: column; gap: 8px; }
+        .form-group label { font-size: 12px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px; }
+        .form-group input, .form-group select { background-color: rgba(0,0,0,0.02); border: 1px solid var(--border-card); padding: 14px; border-radius: var(--radius-md); color: var(--text-main); font-size: 14px; transition: var(--transition); }
+        [data-theme="dark"] .form-group input, [data-theme="dark"] .form-group select { background-color: rgba(0,0,0,0.3); }
+        .form-group input:focus { border-color: var(--color-primary); outline: none; }
+        .btn-submit { background-color: var(--color-primary); color: #000; border: none; padding: 14px; border-radius: var(--radius-md); font-weight: 700; cursor: pointer; width: 100%; font-size: 14px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        
+        .tag-list { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+        .tag-item { background: rgba(0,0,0,0.02); border: 1px solid var(--border-card); padding: 6px 14px; border-radius: 30px; font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 8px; }
+        [data-theme="dark"] .tag-item { background: rgba(255,255,255,0.04); }
+
+        .mobile-list-view { display: flex; flex-direction: column; gap: var(--spacing-sm); }
+        .list-item { background: var(--bg-card); border: 1px solid var(--border-card); border-radius: var(--radius-lg); padding: 16px; display: flex; justify-content: space-between; align-items: center; box-shadow: var(--shadow-ui); }
+        .table-container { display: none; }
+
+        .status-box { background-color: rgba(56, 189, 248, 0.04); border: 1px solid rgba(56, 189, 248, 0.1); padding: var(--spacing-sm); border-radius: var(--radius-md); font-size: 13px; color: var(--text-muted); display: flex; gap: 10px; }
+        .sheets-badge { background-color: rgba(74, 222, 128, 0.08); border: 1px solid rgba(74, 222, 128, 0.2); color: var(--color-positive); font-size: 12px; font-weight: 600; padding: 6px 12px; border-radius: 30px; display: flex; align-items: center; gap: 6px; }
+
+        /* --- Modales --- */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.4); backdrop-filter: blur(10px); z-index: 2000; align-items: center; justify-content: center; padding: var(--spacing-sm); }
+        .modal.active { display: flex; }
+        .modal-content { background-color: var(--bg-card); border: 1px solid var(--border-card); padding: var(--spacing-md); border-radius: var(--radius-lg); width: 100%; max-width: 450px; box-shadow: 0 20px 50px rgba(0,0,0,0.1); }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-md); }
+        .btn-close-modal { background: none; border: none; color: var(--text-muted); font-size: 22px; cursor: pointer; }
+
+        /* --- FAB --- */
+        .fab-container { position: fixed; bottom: 100px; right: var(--spacing-sm); z-index: 999; }
+        .fab-btn { background-color: var(--color-primary); color: #000; border: none; width: 56px; height: 56px; border-radius: 50%; font-size: 22px; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 24px rgba(56, 189, 248, 0.3); }
+
+        @media (min-width: 768px) {
+            body { padding-top: 95px; padding-bottom: 0; }
+            .main-nav { position: fixed; top: 0; bottom: auto; height: 80px; padding: 0 var(--spacing-lg); border-top: none; border-bottom: 1px solid var(--border-card); justify-content: space-between; }
+            [data-theme="light"] .main-nav { border-bottom: 1px solid rgba(0,0,0,0.06); }
+            .nav-logo h2 { display: block; font-weight: 800; font-size: 24px; letter-spacing: -1px; }
+            .nav-links { display: flex; gap: var(--spacing-sm); width: auto; }
+            .nav-links li button.nav-btn-link { flex-direction: row; gap: 8px; font-size: 14px; width: auto; padding: 10px 16px; border-radius: var(--radius-md); }
+            .nav-links li button.nav-btn-link.active { background: rgba(56, 189, 248, 0.08); }
+            [data-theme="light"] .nav-links li button.nav-btn-link { color: var(--text-main); }
+            [data-theme="light"] .nav-links li button.nav-btn-link.active { background: rgba(2, 132, 199, 0.08); color: var(--color-primary); }
+            [data-theme="light"] .btn-toggle { color: var(--text-main); }
+            .kpi-grid { grid-template-columns: repeat(4, 1fr); gap: var(--spacing-md); }
+            .amount { font-size: 24px; }
+            .cards-grid { grid-template-columns: repeat(2, 1fr); gap: var(--spacing-md); }
+            .mobile-list-view { display: none; }
+            .table-container { display: block; background: var(--bg-card); border-radius: var(--radius-lg); border: 1px solid var(--border-card); padding: var(--spacing-sm); }
+            .data-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+            .data-table th { padding: 16px; text-align: left; color: var(--text-muted); border-bottom: 1px solid var(--border-card); }
+            .data-table td { padding: 18px 16px; border-bottom: 1px solid rgba(0,0,0,0.02); }
+            .fab-container { display: none; }
+            .btn-desktop-add { background-color: var(--color-primary); color: #000; border: none; padding: 10px 18px; border-radius: var(--radius-md); font-weight: 600; cursor: pointer; font-size: 13px; display: flex; align-items: center; gap: 6px; }
         }
     </style>
 </head>
-<body class="light-mode">
+<body data-theme="dark"> 
 
-    <header class="header">
-        <div class="url-bar">
-            <span class="lock-icon">🔒</span>
-            <span class="url-text">narc2310.github.io</span>
+    <div id="auth-overlay">
+        <div class="auth-card">
+            <h2>Acceso Protegido</h2>
+            <p>Ingresa tu PIN de seguridad para acceder a MiCapital</p>
+            <div class="pin-input-group">
+                <input type="password" id="pin-field" maxlength="4" placeholder="••••" oninput="validatePIN()">
+                <div class="auth-error" id="auth-err-msg">PIN Incorrecto. Inténtalo de nuevo.</div>
+            </div>
         </div>
-        <div class="theme-toggle-container">
-            <button class="theme-toggle" id="themeToggle">🌓</button>
-        </div>
-    </header>
+    </div>
 
-    <main class="main-content">
-
-        <section class="kpi-grid">
-            <div class="kpi-card negative">
-                <div class="kpi-title">Balance Neto</div>
-                <div class="kpi-value">S/ -96.39</div>
-            </div>
-            <div class="kpi-card positive">
-                <div class="kpi-title">Mis Ahorros</div>
-                <div class="kpi-value">S/ 43,895.50</div>
-            </div>
-            <div class="kpi-card favor">
-                <div class="kpi-title">Préstamos Favor</div>
-                <div class="kpi-value">S/ 5,830.80</div>
-            </div>
-            <div class="kpi-card negative">
-                <div class="kpi-title">Deuda Tarjetas</div>
-                <div class="kpi-value">S/ -49,822.69</div>
-            </div>
-        </section>
-
-        <section class="panel-section">
-            <div class="section-header">
-                <h2 class="section-title">Análisis de Capital</h2>
-                <div class="sync-status"><span class="dot"></span>Firebase Sincronizado</div>
-            </div>
-            <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 20px;">Tus datos se resguardan de forma segura en Firebase Realtime Database.</p>
-        </section>
-
-        <section class="panel-section">
-            <div class="section-header">
-                <h2 class="section-title">Catálogo Maestro y Color de Tarjetas</h2>
-            </div>
-            <div class="form-group">
-                <div class="input-group">
-                    <input type="text" placeholder="Ej. Interbank Visa" id="cardName">
-                    <input type="color" value="#4CAF50" id="cardColor" style="padding: 0; width: 50px; height: 50px; border: none; cursor: pointer; border-radius: 8px;">
-                </div>
-                <button class="btn-primary" id="addCard">Insertar</button>
-            </div>
-            <div class="card-list" id="cardList">
-                <div class="card-item" style="border-color: #4CAF50;">
-                    <div class="card-info">
-                        <span>💳</span>
-                        <span>Interbank Visa</span>
-                    </div>
-                    <button class="delete-btn">✕</button>
-                </div>
-                <div class="card-item" style="border-color: #4CAF50;">
-                    <div class="card-info">
-                        <span>💳</span>
-                        <span>Interbank Amex</span>
-                    </div>
-                    <button class="delete-btn">✕</button>
-                </div>
-                <div class="card-item" style="border-color: #3F51B5;">
-                    <div class="card-info">
-                        <span>💳</span>
-                        <span>BBVA Visa</span>
-                    </div>
-                    <button class="delete-btn">✕</button>
-                </div>
-            </div>
-        </section>
-
-        <section class="panel-section">
-            <div class="section-header">
-                <h2 class="section-title">Puente API Google Sheets</h2>
-            </div>
-            <div class="form-group">
-                <label style="font-size: 11px; text-transform: uppercase; color: var(--text-secondary); margin-bottom: 5px; display: block;">Spreadsheet ID Clave</label>
-                <input type="text" value="1BxiMVs0XRA5nFMdKvBdBZjgmuUUqptlb" readonly>
-            </div>
-            <div style="display: grid; grid-template-columns: 2fr 1fr; gap: var(--spacing-sm);">
-                <div class="form-group">
-                    <label style="font-size: 11px; text-transform: uppercase; color: var(--text-secondary); margin-bottom: 5px; display: block;">Hoja / Pestaña</label>
-                    <input type="text" value="Resumen" readonly>
-                </div>
-                <div class="form-group">
-                    <label style="font-size: 11px; text-transform: uppercase; color: var(--text-secondary); margin-bottom: 5px; display: block;">Celda Vinculada</label>
-                    <input type="text" value="G5" readonly>
-                </div>
-            </div>
-        </section>
-
-    </main>
-
-    <button class="fab" id="fabAdd">+</button>
-
-    <nav class="bottom-nav">
-        <a href="#" class="nav-item">
-            <span class="nav-icon">📊</span>
-            <span>Inicio</span>
-        </a>
-        <a href="#" class="nav-item">
-            <span class="nav-icon">💳</span>
-            <span>Tarjetas</span>
-        </a>
-        <a href="#" class="nav-item">
-            <span class="nav-icon">💰</span>
-            <span>Cobranzas</span>
-        </a>
-        <a href="#" class="nav-item active">
-            <span class="nav-icon">⚙️</span>
-            <span>Config</span>
-        </a>
+    <nav class="main-nav">
+        <div class="nav-logo"><h2>MiCapital</h2></div>
+        <ul class="nav-links">
+            <li><button class="nav-btn-link active" onclick="switchTab('tab-balance')"><i class="fa-solid fa-chart-pie"></i><span>Inicio</span></button></li>
+            <li><button class="nav-btn-link" onclick="switchTab('tab-tarjetas')"><i class="fa-solid fa-credit-card"></i><span>Tarjetas</span></button></li>
+            <li><button class="nav-btn-link" onclick="switchTab('tab-cobranzas')"><i class="fa-solid fa-hand-holding-dollar"></i><span>Cobranzas</span></button></li>
+            <li><button class="nav-btn-link" onclick="switchTab('tab-config')"><i class="fa-solid fa-sliders"></i><span>Config</span></button></li>
+            <li><button class="btn-toggle" id="theme-toggle" onclick="toggleTheme()"><i class="fa-solid fa-moon"></i></button></li>
+        </ul>
     </nav>
 
-    <script>
-        // --- Lógica de Cambio de Tema ---
-        const themeToggleBtn = document.getElementById('themeToggle');
-        const body = document.body;
+    <main class="dashboard-container">
+        <div id="kpi-section-container">
+            <div class="kpi-grid">
+                <div class="kpi-card">
+                    <div class="kpi-header-row"><h3>Balance Neto</h3><i class="fa-solid fa-wallet"></i></div>
+                    <p class="amount" id="net-amount" style="color:var(--color-positive)">S/ 0.00</p>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-header-row"><h3>Mis Ahorros</h3><button class="btn-edit-kpi" onclick="openSavingsModal()"><i class="fa-solid fa-pen"></i></button></div>
+                    <p class="amount" id="kpi-savings">S/ 40,000.00</p>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-header-row"><h3>Préstamos Favor</h3><i class="fa-solid fa-arrow-trend-up"></i></div>
+                    <p class="amount" id="kpi-loans" style="color:var(--color-primary)">S/ 0.00</p>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-header-row"><h3>Deuda Tarjetas</h3><i class="fa-solid fa-arrow-trend-down"></i></div>
+                    <p class="amount" id="kpi-debt" style="color:var(--color-negative)">S/ 0.00</p>
+                </div>
+            </div>
+        </div>
 
-        themeToggleBtn.addEventListener('click', () => {
-            if (body.classList.contains('light-mode')) {
-                body.classList.remove('light-mode');
-                body.classList.add('dark-mode');
-                localStorage.setItem('theme', 'dark');
-            } else {
-                body.classList.remove('dark-mode');
-                body.classList.add('light-mode');
-                localStorage.setItem('theme', 'light');
+        <section id="tab-balance" class="dashboard-section active">
+            <div class="section-header-actions"><h2>Análisis de Capital</h2><span class="sheets-badge" id="sheets-connection-status"><i class="fa-solid fa-database"></i> Firebase Sincronizado</span></div>
+            <div class="status-box">
+                <i class="fa-solid fa-circle-info"></i>
+                <div><strong>Protección y Nube Activas:</strong> Tus datos se resguardan de forma segura en Firebase Realtime Database.</div>
+            </div>
+        </section>
+
+        <section id="tab-tarjetas" class="dashboard-section">
+            <div class="section-header-actions"><h2>Líneas de Crédito Ocupadas</h2><button class="btn-desktop-add" onclick="openModal('card')"><i class="fa-solid fa-plus"></i> Vincular Línea</button></div>
+            <div class="cards-grid" id="cards-container"></div>
+        </section>
+
+        <section id="tab-cobranzas" class="dashboard-section">
+            <div class="section-header-actions"><h2>Cuentas Activas por Cobrar</h2><button class="btn-desktop-add" onclick="openModal('loan')"><i class="fa-solid fa-user-plus"></i> Añadir Deudor</button></div>
+            <div class="mobile-list-view" id="loans-mobile-container"></div>
+            <div class="table-container"><table class="data-table"><thead><tr><th>Deudor</th><th>Monto Cedido</th><th>Fecha Límite</th><th>Acciones de Control</th></tr></thead><tbody id="loans-desktop-container"></tbody></table></div>
+        </section>
+
+        <section id="tab-config" class="dashboard-section">
+            <div class="section-header-actions"><h2>Panel de Control Personalizado</h2></div>
+            
+            <div class="config-card">
+                <h3 style="margin-bottom: 12px; color: var(--color-primary); font-size:16px;"><i class="fa-solid fa-palette"></i> Catálogo Maestro y Color de Tarjetas</h3>
+                <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 15px;">
+                    <input type="text" id="new-card-name" placeholder="Ej. Interbank Visa" style="flex:1;">
+                    <input type="color" id="new-card-color" value="#0284c7" style="width:50px; height:45px; padding:0; cursor:pointer; border-radius:8px; border:1px solid var(--border-card);">
+                    <button class="btn-desktop-add" style="height:45px;" onclick="addCardToCatalog()"><i class="fa-solid fa-plus"></i> Insertar</button>
+                </div>
+                <div class="tag-list" id="catalog-tags-container"></div>
+            </div>
+
+            <div class="config-card">
+                <h3 style="margin-bottom: 12px; color: var(--color-sync); font-size:16px;"><i class="fa-solid fa-link"></i> Puente API Google Sheets</h3>
+                <div class="form-group"><label>Spreadsheet ID Clave</label><input type="text" id="sheet-id" value="1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms"></div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                    <div class="form-group"><label>Hoja / Pestaña</label><input type="text" id="sheet-name" value="Resumen"></div>
+                    <div class="form-group"><label>Celda Vinculada</label><input type="text" id="sheet-cell" value="G5"></div>
+                </div>
+                <button class="btn-submit" style="background-color: var(--color-sync); color:#fff;" onclick="saveSheetsConfig()"><i class="fa-solid fa-cloud-arrow-down"></i> Vincular Celda Activos</button>
+            </div>
+        </section>
+    </main>
+
+    <div class="fab-container"><button class="fab-btn" onclick="openModal('card')"><i class="fa-solid fa-plus"></i></button></div>
+
+    <div class="modal" id="form-modal">
+        <div class="modal-content">
+            <div class="modal-header"><h3 id="modal-title">Registrar Movimiento</h3><button class="btn-close-modal" onclick="closeModal()">&times;</button></div>
+            <input type="hidden" id="edit-id" value="">
+            <div class="form-group" id="category-selector-group">
+                <label>Categoría Finanzas</label>
+                <select id="form-type" onchange="adjustFormFields()">
+                    <option value="card">Tarjeta de Crédito</option>
+                    <option value="loan">Préstamo por Cobrar</option>
+                </select>
+            </div>
+            <div id="dynamic-fields"></div>
+            <button class="btn-submit" id="btn-modal-submit" onclick="handleFormSubmit()"><i class="fa-solid fa-circle-check"></i> Comprometer Cambios</button>
+        </div>
+    </div>
+
+    <div class="modal" id="savings-modal">
+        <div class="modal-content">
+            <div class="modal-header"><h3>Ajustar Capital de Ahorros</h3><button class="btn-close-modal" onclick="closeSavingsModal()">&times;</button></div>
+            <div class="form-group"><label>Saldo Líquido Actual (S/.)</label><input type="number" id="input-savings-value"></div>
+            <button class="btn-submit" onclick="handleSavingsSubmit()"><i class="fa-solid fa-floppy-disk"></i> Modificar Saldo</button>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+        // Tus credenciales exactas mapeadas al SDK Web Directo
+        const firebaseConfig = {
+            apiKey: "AIzaSyAXLo8Ffq9YL_DlUBkxukzwW5hIC31AazA",
+            authDomain: "micapital-dashboard.firebaseapp.com",
+            databaseURL: "https://micapital-dashboard-default-rtdb.firebaseio.com",
+            projectId: "micapital-dashboard",
+            storageBucket: "micapital-dashboard.firebasestorage.app",
+            messagingSenderId: "550166189958",
+            appId: "1:550166189958:web:2b25bfcf07dd7716d17e07"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        // Listener en tiempo real: Escucha y descarga los datos cuando cambian en Firebase
+        onValue(ref(db, 'dashboard/'), (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                if (data.savings !== undefined) window.savings = data.savings;
+                if (data.cardCatalog) window.cardCatalog = data.cardCatalog;
+                if (data.cards) window.cards = data.cards;
+                if (data.loans) window.loans = data.loans;
+                window.renderCatalog();
+                window.renderDashboard();
             }
         });
 
-        // --- Persistencia del Tema (Carga inicial) ---
-        const savedTheme = localStorage.getItem('theme');
-        if (savedTheme) {
-            body.classList.remove('light-mode', 'dark-mode');
-            body.classList.add(savedTheme + '-mode');
+        // Función global expuesta para enviar datos a la nube al mutar el estado de la UI
+        window.syncDataToFirebase = function() {
+            set(ref(db, 'dashboard/'), {
+                savings: window.savings,
+                cardCatalog: window.cardCatalog,
+                cards: window.cards,
+                loans: window.loans
+            });
+        };
+    </script>
+
+    <script>
+        // Valores iniciales por defecto (si Firebase está vacío)
+        window.savings = 40000;
+        window.cardCatalog = [
+            { name: "Interbank Visa", color: "#10b981" },
+            { name: "Banco BCP MasterCard", color: "#0284c7" },
+            { name: "BBVA Continental", color: "#1e3a8a" }
+        ];
+        window.cards = [
+            { id: 1, bank: 'Interbank Visa', limit: 15000, debt: 4200, cut: '20', pay: '15' },
+            { id: 2, bank: 'Banco BCP MasterCard', limit: 10000, debt: 2800, cut: '12', pay: '07' }
+        ];
+        window.loans = [
+            { id: 1, debtor: 'Juan Carlos M.', amount: 1500, date: '2026-06-30' }
+        ];
+
+        // Autenticación por PIN
+        function validatePIN() {
+            const pinField = document.getElementById('pin-field');
+            const errorMsg = document.getElementById('auth-err-msg');
+            const overlay = document.getElementById('auth-overlay');
+
+            if (pinField.value === "0132") {
+                errorMsg.style.display = "none";
+                overlay.classList.add('hidden');
+                sessionStorage.setItem('authenticated', 'true');
+            } else if (pinField.value.length === 4) {
+                errorMsg.style.display = "block";
+                pinField.value = "";
+            }
         }
 
-        // --- Lógica del Catálogo Maestro ---
-        const cardNameInput = document.getElementById('cardName');
-        const cardColorInput = document.getElementById('cardColor');
-        const addCardBtn = document.getElementById('addCard');
-        const cardList = document.getElementById('cardList');
+        window.addEventListener('DOMContentLoaded', () => {
+            if(sessionStorage.getItem('authenticated') === 'true') {
+                document.getElementById('auth-overlay').classList.add('hidden');
+            }
+        });
 
-        addCardBtn.addEventListener('click', () => {
-            const name = cardNameInput.value;
-            const color = cardColorInput.value;
+        function switchTab(tabId) {
+            document.querySelectorAll('.dashboard-section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-btn-link').forEach(b => b.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            const idx = ['tab-balance', 'tab-tarjetas', 'tab-cobranzas', 'tab-config'].indexOf(tabId);
+            if(idx !== -1) document.querySelectorAll('.nav-btn-link')[idx].classList.add('active');
+        }
 
-            if (name.trim() === '') return;
+        function toggleTheme() {
+            const body = document.body;
+            const isDark = body.getAttribute('data-theme') !== 'light';
+            body.setAttribute('data-theme', isDark ? 'light' : 'dark');
+            document.getElementById('theme-toggle').innerHTML = isDark ? '<i class="fa-solid fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';
+        }
 
-            const cardItem = document.createElement('div');
-            cardItem.className = 'card-item';
-            cardItem.style.borderLeftColor = color;
-            cardItem.innerHTML = `
-                <div class="card-info">
-                    <span>💳</span>
-                    <span>${name}</span>
+        window.renderCatalog = function() {
+            const container = document.getElementById('catalog-tags-container');
+            container.innerHTML = window.cardCatalog.map((item, index) => `
+                <span class="tag-item" style="border-left: 3px solid ${item.color}">
+                    <i class="fa-solid fa-credit-card" style="color:${item.color}"></i> ${item.name} 
+                    <button class="btn-remove-tag" onclick="removeCardFromCatalog(${index})">&times;</button>
+                </span>
+            `).join('');
+        };
+
+        window.addCardToCatalog = function() {
+            const input = document.getElementById('new-card-name');
+            const colorInput = document.getElementById('new-card-color');
+            const name = input.value.trim();
+            if(name && !window.cardCatalog.some(c => c.name === name)) { 
+                window.cardCatalog.push({ name: name, color: colorInput.value }); 
+                input.value = ''; 
+                window.renderCatalog();
+                if(window.syncDataToFirebase) window.syncDataToFirebase();
+            }
+        };
+
+        window.removeCardFromCatalog = function(index) { 
+            window.cardCatalog.splice(index, 1); 
+            window.renderCatalog(); 
+            if(window.syncDataToFirebase) window.syncDataToFirebase();
+        };
+
+        window.renderDashboard = function() {
+            let totalDebt = window.cards.reduce((sum, c) => sum + parseFloat(c.debt), 0);
+            let totalLoans = window.loans.reduce((sum, l) => sum + parseFloat(l.amount), 0);
+            let netWorth = (window.savings + totalLoans) - totalDebt;
+
+            document.getElementById('net-amount').innerText = `S/ ${netWorth.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+            document.getElementById('kpi-savings').innerText = `S/ ${window.savings.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+            document.getElementById('kpi-debt').innerText = `S/ -${totalDebt.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+            document.getElementById('kpi-loans').innerText = `S/ ${totalLoans.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+
+            document.getElementById('cards-container').innerHTML = window.cards.map(c => {
+                const catalogItem = window.cardCatalog.find(cat => cat.name === c.bank);
+                const accentColor = catalogItem ? catalogItem.color : 'var(--color-primary)';
+                const percentage = Math.min((c.debt / c.limit) * 100, 100);
+                
+                return `
+                <article class="credit-card-item" style="--card-accent-color: ${accentColor}">
+                    <div class="card-meta"><span class="bank-name"><i class="fa-solid fa-building-columns" style="color:${accentColor}"></i> ${c.bank}</span></div>
+                    <div>
+                        <span style="color:var(--text-muted); font-size:11px; text-transform:uppercase; font-weight:600;">Línea Consumida</span>
+                        <p class="card-amount">S/ ${parseFloat(c.debt).toLocaleString('en-US', {minimumFractionDigits: 2})}</p>
+                    </div>
+                    <div class="credit-limit-wrapper">
+                        <div class="credit-limit-info"><span>Uso: ${percentage.toFixed(1)}%</span><span>Línea: S/ ${c.limit}</span></div>
+                        <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: ${percentage}%;"></div></div>
+                    </div>
+                    <div class="card-dates">
+                        <div><i class="fa-solid fa-calendar-minus"></i> Corte: <strong>${c.cut} c/mes</strong></div>
+                        <div><i class="fa-solid fa-calendar-check"></i> Pago: <strong>${c.pay} c/mes</strong></div>
+                    </div>
+                    <div class="card-buttons-group">
+                        <button class="btn-action-card btn-edit-item" onclick="editCard(${c.id})"><i class="fa-solid fa-pen-to-square"></i> Ajustar</button>
+                        <button class="btn-action-card" onclick="deleteCard(${c.id})"><i class="fa-solid fa-trash-can"></i> Quitar</button>
+                    </div>
+                </article>
+            `}).join('');
+
+            document.getElementById('loans-mobile-container').innerHTML = window.loans.map(l => `
+                <div class="list-item">
+                    <div><p class="list-name"><i class="fa-solid fa-user" style="color:var(--color-primary); font-size:12px;"></i> ${l.debtor}</p><span class="list-date">Plazo: ${l.date}</span></div>
+                    <div style="display:flex; align-items:center; gap:8px;"><span class="list-amount">S/ ${l.amount}</span><button class="btn-action-card btn-edit-item" style="padding:6px 10px;" onclick="editLoan(${l.id})"><i class="fa-solid fa-pen"></i></button></div>
                 </div>
-                <button class="delete-btn">✕</button>
-            `;
+            `).join('');
 
-            // Agregar evento de borrar
-            cardItem.querySelector('.delete-btn').addEventListener('click', () => {
-                cardItem.remove();
-            });
+            document.getElementById('loans-desktop-container').innerHTML = window.loans.map(l => `
+                <tr>
+                    <td><strong>${l.debtor}</strong></td>
+                    <td style="color:var(--color-positive); font-weight:700;">S/ ${parseFloat(l.amount).toLocaleString('en-US', {minimumFractionDigits: 2})}</td>
+                    <td>${l.date}</td>
+                    <td><button class="btn-action-card btn-edit-item" style="padding: 6px 12px; display:inline-flex;" onclick="editLoan(${l.id})"><i class="fa-solid fa-marker"></i> Gestionar</button></td>
+                </tr>
+            `).join('');
+        };
 
-            cardList.appendChild(cardItem);
-            cardNameInput.value = ''; // Limpiar input
-        });
+        function openSavingsModal() { document.getElementById('savings-modal').classList.add('active'); document.getElementById('input-savings-value').value = window.savings; }
+        function closeSavingsModal() { document.getElementById('savings-modal').classList.remove('active'); }
+        function handleSavingsSubmit() { 
+            window.savings = parseFloat(document.getElementById('input-savings-value').value) || 0; 
+            closeSavingsModal(); 
+            window.renderDashboard(); 
+            if(window.syncDataToFirebase) window.syncDataToFirebase();
+        }
 
-        // --- Borrar tarjetas iniciales ---
-        const initialDeleteButtons = document.querySelectorAll('.card-item .delete-btn');
-        initialDeleteButtons.forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.target.closest('.card-item').remove();
-            });
-        });
+        function openModal(type) {
+            document.getElementById('form-modal').classList.add('active');
+            document.getElementById('form-type').value = type;
+            document.getElementById('category-selector-group').style.display = 'flex';
+            document.getElementById('edit-id').value = "";
+            adjustFormFields();
+        }
+        function closeModal() { document.getElementById('form-modal').classList.remove('active'); }
+
+        function adjustFormFields() {
+            const type = document.getElementById('form-type').value;
+            const container = document.getElementById('dynamic-fields');
+            if(type === 'card') {
+                const options = window.cardCatalog.map(c => `<option value="${c.name}">${c.name}</option>`).join('');
+                container.innerHTML = `
+                    <div class="form-group"><label>Seleccionar Tarjeta</label><select id="i-bank">${options || '<option>Configura una tarjeta primero</option>'}</select></div>
+                    <div class="form-group"><label>Línea de Crédito Absoluta (S/.)</label><input type="number" id="i-limit" value="10000" required></div>
+                    <div class="form-group"><label>Deuda Consumida (S/.)</label><input type="number" id="i-debt" placeholder="0.00" required></div>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                        <div class="form-group"><label>Día Corte</label><input type="number" id="i-cut" value="20"></div>
+                        <div class="form-group"><label>Día Pago</label><input type="number" id="i-pay" value="15"></div>
+                    </div>
+                `;
+            } else {
+                container.innerHTML = `
+                    <div class="form-group"><label>Nombre Completo</label><input type="text" id="i-debtor" required></div>
+                    <div class="form-group"><label>Monto Entregado (S/.)</label><input type="number" id="i-amount" required></div>
+                    <div class="form-group"><label>Fecha de Devolución</label><input type="date" id="i-date" value="2026-07-15"></div>
+                `;
+            }
+        }
+
+        function handleFormSubmit() {
+            const type = document.getElementById('form-type').value;
+            const editId = document.getElementById('edit-id').value;
+
+            if (editId) {
+                if(type === 'card') {
+                    const idx = window.cards.findIndex(c => c.id == editId);
+                    if(idx !== -1) {
+                        window.cards[idx].bank = document.getElementById('i-bank').value;
+                        window.cards[idx].limit = parseFloat(document.getElementById('i-limit').value) || 0;
+                        window.cards[idx].debt = parseFloat(document.getElementById('i-debt').value) || 0;
+                        window.cards[idx].cut = document.getElementById('i-cut').value;
+                        window.cards[idx].pay = document.getElementById('i-pay').value;
+                    }
+                } else {
+                    const idx = window.loans.findIndex(l => l.id == editId);
+                    if(idx !== -1) {
+                        window.loans[idx].debtor = document.getElementById('i-debtor').value;
+                        window.loans[idx].amount = parseFloat(document.getElementById('i-amount').value) || 0;
+                        window.loans[idx].date = document.getElementById('i-date').value;
+                    }
+                }
+            } else {
+                if(type === 'card') {
+                    window.cards.push({ id: Date.now(), bank: document.getElementById('i-bank').value, limit: parseFloat(document.getElementById('i-limit').value) || 0, debt: parseFloat(document.getElementById('i-debt').value) || 0, cut: document.getElementById('i-cut').value || '20', pay: document.getElementById('i-pay').value || '15' });
+                } else {
+                    window.loans.push({ id: Date.now(), debtor: document.getElementById('i-debtor').value, amount: parseFloat(document.getElementById('i-amount').value) || 0, date: document.getElementById('i-date').value });
+                }
+            }
+            closeModal();
+            window.renderDashboard();
+            if(window.syncDataToFirebase) window.syncDataToFirebase();
+        }
+
+        function editCard(id) {
+            const card = window.cards.find(c => c.id === id);
+            if(!card) return;
+            openModal('card');
+            document.getElementById('modal-title').innerText = "Ajustar Parámetros de Tarjeta";
+            document.getElementById('edit-id').value = id;
+            document.getElementById('category-selector-group').style.display = 'none';
+            document.getElementById('i-bank').value = card.bank;
+            document.getElementById('i-limit').value = card.limit;
+            document.getElementById('i-debt').value = card.debt;
+            document.getElementById('i-cut').value = card.cut;
+            document.getElementById('i-pay').value = card.pay;
+        }
+
+        function editLoan(id) {
+            const loan = window.loans.find(l => l.id === id);
+            if(!loan) return;
+            openModal('loan');
+            document.getElementById('edit-id').value = id;
+            document.getElementById('category-selector-group').style.display = 'none';
+            document.getElementById('i-debtor').value = loan.debtor;
+            document.getElementById('i-amount').value = loan.amount;
+            document.getElementById('i-date').value = loan.date;
+        }
+
+        function deleteCard(id) { window.cards = window.cards.filter(c => c.id !== id); window.renderDashboard(); if(window.syncDataToFirebase) window.syncDataToFirebase(); }
+        function saveSheetsConfig() { alert('Configuración de Google Sheets mapeada lógicamente.'); document.getElementById('sheets-connection-status').innerHTML = '<i class="fa-solid fa-cloud"></i> Sincronizado'; }
+
+        window.renderCatalog();
+        adjustFormFields();
+        window.renderDashboard();
     </script>
 </body>
 </html>

@@ -116,6 +116,27 @@
         .btn-edit-item { background-color: rgba(56, 189, 248, 0.08); color: var(--color-primary); border-color: rgba(56, 189, 248, 0.15); }
 
         /* --- Panel Config --- */
+        /* --- Ajustes de Proporciones para Móvil (Xiaomi 15) --- */
+        @media (max-width: 767px) {
+            #tab-config .config-card div[style*="display: flex"] {
+                flex-direction: column !important;
+                align-items: stretch !important;
+                gap: 12px !important;
+            }
+            #tab-config #new-card-color {
+                width: 100% !important;
+                height: 40px !important;
+            }
+            #tab-config .btn-desktop-add {
+                width: 100% !important;
+                height: 45px !important;
+            }
+            .config-card {
+                padding: 16px !important;
+                margin-bottom: var(--spacing-sm) !important;
+            }
+        }
+
         .config-card { background: var(--bg-card); border: 1px solid var(--border-card); border-radius: var(--radius-lg); padding: 24px; margin-bottom: var(--spacing-md); box-shadow: var(--shadow-ui); }
         .form-group { margin-bottom: var(--spacing-sm); display: flex; flex-direction: column; gap: 8px; }
         .form-group label { font-size: 12px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px; }

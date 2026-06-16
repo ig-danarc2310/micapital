@@ -2,261 +2,558 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Financiero Responsivo</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SolesTrack - Dashboard Financiero Avanzado</title>
     <style>
+        /* --- Reset y Estilos Base --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
         :root {
-            --primary-bg: #F0F4F8; /* Un azul muy pálido, para el fondo */
+            /* Colores Tema Claro */
+            --bg-color: #F4F7FC;
             --card-bg: #FFFFFF;
-            --text-primary: #333333;
+            --text-main: #333333;
             --text-secondary: #777777;
-            --primary-action: #2196F3;
-            --positive: #4CAF50;
-            --negative: #F44336;
+            --accent-green: #4CAF50;
+            --accent-red: #F44336;
+            --accent-blue: #2196F3;
+            --accent-purple: #9C27B0;
+            --shadow-light: 0 4px 15px rgba(0, 0, 0, 0.05);
+            --border-radius: 12px;
+            --spacing-xs: 8px;
+            --spacing-sm: 12px;
+            --spacing-md: 20px;
+            --spacing-lg: 30px;
+            --transition-speed: 0.3s;
+        }
+
+        body.dark-mode {
+            /* Colores Tema Oscuro */
+            --bg-color: #121212;
+            --card-bg: #1E1E1E;
+            --text-main: #E0E0E0;
+            --text-secondary: #AAAAAA;
+            --shadow-light: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
 
         body {
-            font-family: 'Roboto', sans-serif;
-            background-color: var(--primary-bg);
-            color: var(--text-primary);
-            margin: 0;
-            padding: 16px; /* Margen general para el cuerpo */
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            padding-bottom: 70px; /* Espacio para el menú inferior */
+            transition: background-color var(--transition-speed);
         }
 
-        /* Contenedor principal de tarjetas */
-        .card-container {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr); /* 2 columnas para móvil */
-            gap: 16px;
-            width: 100%;
-            max-width: 600px; /* Para PC, no se expande demasiado */
-            margin-bottom: 24px;
-        }
-
-        /* Estilo de Tarjetas Principales */
-        .main-card {
-            background-color: var(--card-bg);
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-        .main-card .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-        }
-
-        .main-card h3 {
-            font-size: 14px;
-            color: var(--text-secondary);
-            margin: 0;
-            font-weight: 500;
-        }
-
-        .main-card p {
-            font-size: 24px;
-            font-weight: 700;
-            margin: 0;
-        }
-
-        /* Colores específicos de tarjetas */
-        .main-card.positive p { color: var(--positive); }
-        .main-card.negative p { color: var(--negative); }
-        .main-card.savings p { color: var(--text-primary); }
-
-        /* Iconos simples con texto (reemplázalos por iconos reales si los tienes) */
-        .icon {
-            font-size: 18px;
-            opacity: 0.7;
-        }
-
-        /* Estilo para los botones de añadir */
-        .add-button {
-            background-color: #2196F3;
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 48px;
-            height: 48px;
-            font-size: 24px;
+        /* --- Header y URL --- */
+        .header {
             position: fixed;
-            bottom: 24px;
-            right: 24px;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: var(--card-bg);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            padding: var(--spacing-sm) var(--spacing-md);
             display: flex;
+            align-items: center;
             justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+            z-index: 1000;
         }
 
-        /* --- Panel de Configuración (Panel de Control Personalizado) --- */
-        .section-header {
-            width: 100%;
-            max-width: 600px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 16px;
-        }
-
-        .section-header h2 {
-            font-size: 18px;
-            font-weight: 700;
-            margin: 0;
-        }
-
-        .config-card {
-            background-color: var(--card-bg);
-            border-radius: 12px;
-            padding: 24px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            width: calc(100% - 48px); /* Ajuste para el padding interno */
-            max-width: 600px;
-            margin-bottom: 24px;
-        }
-
-        .config-card p {
+        .url-bar {
+            background: #E8EBF3;
+            padding: 8px 15px;
+            border-radius: 50px;
             font-size: 14px;
-            color: var(--text-secondary);
-            margin-top: 0;
-            margin-bottom: 20px;
-        }
-
-        /* --- CORRECCIÓN CRÍTICA DE RESPONSIVIDAD (MÓVIL-FIRST) --- */
-        .config-item {
+            color: var(--text-main);
             display: flex;
-            flex-direction: column; /* Apila los elementos en móvil */
+            align-items: center;
             width: 100%;
-            margin-bottom: 16px; /* Espacio entre los bloques */
-        }
-
-        /* Estilo para las etiquetas (Labels) */
-        .config-item label {
-            font-size: 12px;
-            font-weight: 500;
-            color: var(--text-secondary);
-            text-transform: uppercase;
-            margin-bottom: 8px; /* Espacio para el campo de entrada */
-        }
-
-        /* Estilo para los campos de entrada (Inputs) */
-        .config-item input {
-            width: calc(100% - 24px); /* Ancho completo con padding */
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 14px;
-            background-color: #f9f9f9;
-        }
-
-        /* Contenedor de los dos últimos campos para alineación en móvil */
-        .flex-config-row {
-            display: flex;
-            gap: 16px; /* Espacio entre HOJA y CELDA */
-            width: 100%;
-        }
-
-        .flex-config-row .config-item {
-            flex: 1; /* Divide el espacio al 50% */
-            margin-bottom: 0; /* Elimina margen inferior en este contenedor */
-        }
-
-        /* --- Media Query para PC --- */
-        @media (min-width: 768px) {
-            .card-container {
-                grid-template-columns: repeat(4, 1fr); /* 4 columnas en PC */
-            }
-
-            .config-item {
-                flex-direction: row; /* Vuelve a horizontal en PC */
-                align-items: center;
-                justify-content: space-between;
-                width: 100%;
-            }
-
-            .config-item label {
-                width: 150px; /* Ancho fijo para labels en PC */
-                margin-bottom: 0; /* Sin margen inferior en PC */
-            }
-
-            .config-item input {
-                width: calc(100% - 174px); /* Resto del ancho en PC */
-            }
+            max-width: 400px;
         }
         
+        body.dark-mode .url-bar {
+            background: #2C2C2C;
+        }
+
+        .url-bar .lock-icon {
+            margin-right: 8px;
+            color: var(--text-secondary);
+        }
+
+        .theme-toggle-container {
+            position: absolute;
+            right: var(--spacing-md);
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: var(--text-main);
+        }
+
+        /* --- Contenedor Principal --- */
+        .main-content {
+            margin-top: 60px; /* Altura del header */
+            padding: var(--spacing-md);
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* --- Grid de Tarjetas de Indicadores (Móvil-First) --- */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* Dos columnas por defecto */
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .kpi-card {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: var(--spacing-sm);
+            box-shadow: var(--shadow-light);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .kpi-title {
+            font-size: 11px;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .kpi-value {
+            font-size: 20px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .kpi-card.negative .kpi-value { color: var(--accent-red); }
+        .kpi-card.positive .kpi-value { color: var(--accent-green); }
+        .kpi-card.favor .kpi-value { color: var(--accent-blue); }
+
+        /* --- Secciones de Panel --- */
+        .panel-section {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: var(--spacing-md);
+            box-shadow: var(--shadow-light);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--spacing-md);
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            padding-bottom: 10px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .sync-status {
+            background: rgba(76, 175, 80, 0.1);
+            color: var(--accent-green);
+            font-size: 12px;
+            font-weight: 500;
+            padding: 4px 10px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .sync-status .dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--accent-green);
+            border-radius: 50%;
+            margin-right: 6px;
+        }
+
+        /* --- Formularios y Controles --- */
+        .form-group {
+            margin-bottom: var(--spacing-md);
+        }
+
+        .input-group {
+            display: flex;
+            gap: var(--spacing-xs);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        input[type="text"] {
+            flex-grow: 1;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            background: var(--bg-color);
+            color: var(--text-main);
+            font-size: 14px;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: var(--accent-purple);
+        }
+
+        button {
+            padding: 12px 20px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: opacity 0.2s;
+        }
+
+        button:active {
+            opacity: 0.8;
+        }
+
+        .btn-primary {
+            background: var(--accent-purple);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #E8EBF3;
+            color: var(--text-main);
+        }
+
+        /* --- Lista de Tarjetas --- */
+        .card-list {
+            margin-top: var(--spacing-sm);
+        }
+
+        .card-item {
+            background: rgba(0, 0, 0, 0.02);
+            border-radius: 8px;
+            padding: 12px 15px;
+            margin-bottom: var(--spacing-xs);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 4px solid #ccc; /* Color por defecto */
+        }
+
+        .card-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-item span {
+            font-size: 14px;
+            color: var(--text-main);
+        }
+
+        .delete-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 18px;
+            padding: 0;
+        }
+
+        /* --- Menú de Navegación Inferior (Móvil) --- */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: var(--card-bg);
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.03);
+            z-index: 1000;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 10px;
+            gap: 4px;
+            flex: 1;
+            text-align: center;
+        }
+
+        .nav-item.active {
+            color: var(--accent-purple);
+        }
+
+        .nav-icon {
+            font-size: 20px;
+        }
+
+        /* --- Botón Flotante 'Añadir' --- */
+        .fab {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: var(--accent-purple);
+            color: white;
+            border: none;
+            font-size: 24px;
+            box-shadow: 0 4px 10px rgba(156, 39, 176, 0.3);
+            z-index: 999;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* ===========================================
+           --- MEDIA QUERIES (PARA COMPUTADORA) ---
+           Aplica para pantallas de más de 768px (Tablets y Desktop)
+        =========================================== */
+        @media (min-width: 768px) {
+            .header {
+                justify-content: space-between;
+                padding: 10px 40px;
+            }
+
+            .main-content {
+                margin-top: 80px; /* Header más grande en desktop */
+                padding: 40px;
+            }
+
+            /* --- Grid de KPIs en Escritorio (4 columnas) --- */
+            .kpi-grid {
+                grid-template-columns: repeat(4, 1fr);
+                gap: var(--spacing-md);
+                margin-bottom: var(--spacing-lg);
+            }
+
+            .kpi-card {
+                padding: var(--spacing-md);
+            }
+
+            .kpi-value {
+                font-size: 26px;
+            }
+
+            /* --- Navegación Vertical (Opcional, pero para mantener coherencia) --- */
+            .bottom-nav {
+                display: none; /* Ocultamos menú inferior en PC */
+            }
+
+            /* Mostramos menú lateral en su lugar (requiere ajuste HTML, pero para este MVP simplemente lo quitamos) */
+            
+            .fab {
+                bottom: 40px;
+                right: 40px;
+            }
+        }
     </style>
 </head>
-<body>
+<body class="light-mode">
 
-    <div class="card-container">
-        <div class="main-card positive">
-            <div class="header">
-                <h3>BALANCE NETO</h3>
-                <span class="icon">💼</span>
-            </div>
-            <p>S/ -96.39</p>
+    <header class="header">
+        <div class="url-bar">
+            <span class="lock-icon">🔒</span>
+            <span class="url-text">narc2310.github.io</span>
         </div>
-
-        <div class="main-card savings">
-            <div class="header">
-                <h3>MIS AHORROS</h3>
-                <span class="icon">✏️</span>
-            </div>
-            <p>S/ 43,895.50</p>
+        <div class="theme-toggle-container">
+            <button class="theme-toggle" id="themeToggle">🌓</button>
         </div>
+    </header>
 
-        <div class="main-card positive">
-            <div class="header">
-                <h3>PRÉSTAMOS A FAVOR</h3>
-                <span class="icon">📈</span>
+    <main class="main-content">
+
+        <section class="kpi-grid">
+            <div class="kpi-card negative">
+                <div class="kpi-title">Balance Neto</div>
+                <div class="kpi-value">S/ -96.39</div>
             </div>
-            <p>S/ 5,830.80</p>
-        </div>
-
-        <div class="main-card negative">
-            <div class="header">
-                <h3>DEUDA TARJETAS</h3>
-                <span class="icon">📉</span>
+            <div class="kpi-card positive">
+                <div class="kpi-title">Mis Ahorros</div>
+                <div class="kpi-value">S/ 43,895.50</div>
             </div>
-            <p>S/ -49,822.69</p>
-        </div>
-    </div>
-
-    <button class="add-button">+</button>
-
-    <div class="section-header">
-        <h2>Panel de Control Personalizado</h2>
-    </div>
-
-    <div class="config-card">
-        <p>Configura las credenciales de la API para sincronizar tus datos.</p>
-
-        <div class="config-item">
-            <label for="spreadsheet_id">Spreadsheet ID Clave</label>
-            <input type="text" id="spreadsheet_id" value="1BxiMVs0XRA5nFMdKvBdBZjgmUUQptlbe" placeholder="Ingresa el ID de la hoja">
-        </div>
-
-        <div class="flex-config-row">
-            <div class="config-item">
-                <label for="hoja">Hoja / Pestaña</label>
-                <input type="text" id="hoja" value="Resumen" placeholder="Pestaña">
+            <div class="kpi-card favor">
+                <div class="kpi-title">Préstamos Favor</div>
+                <div class="kpi-value">S/ 5,830.80</div>
             </div>
-
-            <div class="config-item">
-                <label for="celda">Celda Vinculada</label>
-                <input type="text" id="celda" value="G5" placeholder="G5">
+            <div class="kpi-card negative">
+                <div class="kpi-title">Deuda Tarjetas</div>
+                <div class="kpi-value">S/ -49,822.69</div>
             </div>
-        </div>
-    </div>
+        </section>
 
+        <section class="panel-section">
+            <div class="section-header">
+                <h2 class="section-title">Análisis de Capital</h2>
+                <div class="sync-status"><span class="dot"></span>Firebase Sincronizado</div>
+            </div>
+            <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 20px;">Tus datos se resguardan de forma segura en Firebase Realtime Database.</p>
+        </section>
+
+        <section class="panel-section">
+            <div class="section-header">
+                <h2 class="section-title">Catálogo Maestro y Color de Tarjetas</h2>
+            </div>
+            <div class="form-group">
+                <div class="input-group">
+                    <input type="text" placeholder="Ej. Interbank Visa" id="cardName">
+                    <input type="color" value="#4CAF50" id="cardColor" style="padding: 0; width: 50px; height: 50px; border: none; cursor: pointer; border-radius: 8px;">
+                </div>
+                <button class="btn-primary" id="addCard">Insertar</button>
+            </div>
+            <div class="card-list" id="cardList">
+                <div class="card-item" style="border-color: #4CAF50;">
+                    <div class="card-info">
+                        <span>💳</span>
+                        <span>Interbank Visa</span>
+                    </div>
+                    <button class="delete-btn">✕</button>
+                </div>
+                <div class="card-item" style="border-color: #4CAF50;">
+                    <div class="card-info">
+                        <span>💳</span>
+                        <span>Interbank Amex</span>
+                    </div>
+                    <button class="delete-btn">✕</button>
+                </div>
+                <div class="card-item" style="border-color: #3F51B5;">
+                    <div class="card-info">
+                        <span>💳</span>
+                        <span>BBVA Visa</span>
+                    </div>
+                    <button class="delete-btn">✕</button>
+                </div>
+            </div>
+        </section>
+
+        <section class="panel-section">
+            <div class="section-header">
+                <h2 class="section-title">Puente API Google Sheets</h2>
+            </div>
+            <div class="form-group">
+                <label style="font-size: 11px; text-transform: uppercase; color: var(--text-secondary); margin-bottom: 5px; display: block;">Spreadsheet ID Clave</label>
+                <input type="text" value="1BxiMVs0XRA5nFMdKvBdBZjgmuUUqptlb" readonly>
+            </div>
+            <div style="display: grid; grid-template-columns: 2fr 1fr; gap: var(--spacing-sm);">
+                <div class="form-group">
+                    <label style="font-size: 11px; text-transform: uppercase; color: var(--text-secondary); margin-bottom: 5px; display: block;">Hoja / Pestaña</label>
+                    <input type="text" value="Resumen" readonly>
+                </div>
+                <div class="form-group">
+                    <label style="font-size: 11px; text-transform: uppercase; color: var(--text-secondary); margin-bottom: 5px; display: block;">Celda Vinculada</label>
+                    <input type="text" value="G5" readonly>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <button class="fab" id="fabAdd">+</button>
+
+    <nav class="bottom-nav">
+        <a href="#" class="nav-item">
+            <span class="nav-icon">📊</span>
+            <span>Inicio</span>
+        </a>
+        <a href="#" class="nav-item">
+            <span class="nav-icon">💳</span>
+            <span>Tarjetas</span>
+        </a>
+        <a href="#" class="nav-item">
+            <span class="nav-icon">💰</span>
+            <span>Cobranzas</span>
+        </a>
+        <a href="#" class="nav-item active">
+            <span class="nav-icon">⚙️</span>
+            <span>Config</span>
+        </a>
+    </nav>
+
+    <script>
+        // --- Lógica de Cambio de Tema ---
+        const themeToggleBtn = document.getElementById('themeToggle');
+        const body = document.body;
+
+        themeToggleBtn.addEventListener('click', () => {
+            if (body.classList.contains('light-mode')) {
+                body.classList.remove('light-mode');
+                body.classList.add('dark-mode');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                body.classList.remove('dark-mode');
+                body.classList.add('light-mode');
+                localStorage.setItem('theme', 'light');
+            }
+        });
+
+        // --- Persistencia del Tema (Carga inicial) ---
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            body.classList.remove('light-mode', 'dark-mode');
+            body.classList.add(savedTheme + '-mode');
+        }
+
+        // --- Lógica del Catálogo Maestro ---
+        const cardNameInput = document.getElementById('cardName');
+        const cardColorInput = document.getElementById('cardColor');
+        const addCardBtn = document.getElementById('addCard');
+        const cardList = document.getElementById('cardList');
+
+        addCardBtn.addEventListener('click', () => {
+            const name = cardNameInput.value;
+            const color = cardColorInput.value;
+
+            if (name.trim() === '') return;
+
+            const cardItem = document.createElement('div');
+            cardItem.className = 'card-item';
+            cardItem.style.borderLeftColor = color;
+            cardItem.innerHTML = `
+                <div class="card-info">
+                    <span>💳</span>
+                    <span>${name}</span>
+                </div>
+                <button class="delete-btn">✕</button>
+            `;
+
+            // Agregar evento de borrar
+            cardItem.querySelector('.delete-btn').addEventListener('click', () => {
+                cardItem.remove();
+            });
+
+            cardList.appendChild(cardItem);
+            cardNameInput.value = ''; // Limpiar input
+        });
+
+        // --- Borrar tarjetas iniciales ---
+        const initialDeleteButtons = document.querySelectorAll('.card-item .delete-btn');
+        initialDeleteButtons.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.target.closest('.card-item').remove();
+            });
+        });
+    </script>
 </body>
 </html>
